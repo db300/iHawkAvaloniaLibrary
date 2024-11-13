@@ -1,4 +1,5 @@
-﻿using iHawkSkiaSharpCommonLibrary.Entities.FontTableEntities;
+﻿using iHawkSkiaSharpCommonLibrary.Entities;
+using iHawkSkiaSharpCommonLibrary.Entities.FontTableEntities;
 using SkiaSharp;
 using System.Text;
 
@@ -74,6 +75,111 @@ namespace iHawkSkiaSharpCommonLibrary.Helpers
             sb.AppendLine($"sTypoAscender: {table?.Os2Table?.sTypoAscender}");
             sb.AppendLine($"sTypoDescender: {table?.Os2Table?.sTypoDescender}");
             return sb.ToString();
+        }
+
+        public SKBitmap DrawTextToImage(string text, int width, int height, SKColor backgroundColor, SKColor textColor, int textSize, GlyphPreviewParam param)
+        {
+            // 创建一个新的位图
+            var bitmap = new SKBitmap(width, height);
+
+            // 创建一个画布
+            using (var canvas = new SKCanvas(bitmap))
+            {
+                // 填充背景颜色
+                canvas.Clear(backgroundColor);
+
+                // 创建画笔
+                using var paint = new SKPaint
+                {
+                    Color = textColor,
+                    IsAntialias = true,
+                    TextSize = textSize,
+                    Typeface = _typeface
+                };
+
+                // 计算文本的绘制位置
+                var textBounds = new SKRect();
+                paint.MeasureText(text, ref textBounds);
+
+                // 获取字体度量信息
+                var fontMetrics = paint.FontMetrics;
+                var baseline = (height - textBounds.Height) / 2 - fontMetrics.Ascent;
+
+                // 绘制文本
+                var x = (width - textBounds.Width) / 2;
+                canvas.DrawText(text, x, baseline, paint);
+
+                // 绘制基线
+                using var paint4Baseline = new SKPaint
+                {
+                    Color = SKColors.Black,
+                    IsAntialias = true,
+                    PathEffect = SKPathEffect.CreateDash([3, 3], 0),
+                    StrokeWidth = 1
+                };
+                canvas.DrawLine(0, baseline, width, baseline, paint4Baseline);
+
+                // 获取字体表信息
+                var table = GetFontTable(new List<string> { "head", "hhea", "OS/2" });
+
+                paint.Color = SKColors.Red;
+                paint.StrokeWidth = 2;
+                paint.IsAntialias = true;
+
+                // 绘制参考线
+                var em = table!.HeadTable!.unitsPerEm;
+                if (param.YMinMaxVisible && table?.HeadTable != null)
+                {
+                    using var paint4YMinMax = new SKPaint
+                    {
+                        Color = SKColors.Black,
+                        IsAntialias = true,
+                        StrokeWidth = 2
+                    };
+                    DrawReferenceLine(canvas, paint4YMinMax, table.HeadTable.yMin, width, baseline, textSize, em);
+                    DrawReferenceLine(canvas, paint4YMinMax, table.HeadTable.yMax, width, baseline, textSize, em);
+                }
+                if (param.HheaAscDescVisible && table?.HheaTable != null)
+                {
+                    using var paint4Hhea = new SKPaint
+                    {
+                        Color = SKColors.Red,
+                        IsAntialias = true,
+                        StrokeWidth = 1
+                    };
+                    DrawReferenceLine(canvas, paint4Hhea, table.HheaTable.ascender, width, baseline, textSize, em);
+                    DrawReferenceLine(canvas, paint4Hhea, table.HheaTable.descender, width, baseline, textSize, em);
+                }
+                if (param.TypoAscDescVisible && table?.Os2Table != null)
+                {
+                    using var paint4Typo = new SKPaint
+                    {
+                        Color = SKColors.Lime,
+                        IsAntialias = true,
+                        StrokeWidth = 1
+                    };
+                    DrawReferenceLine(canvas, paint4Typo, table.Os2Table.sTypoAscender, width, baseline, textSize, em);
+                    DrawReferenceLine(canvas, paint4Typo, table.Os2Table.sTypoDescender, width, baseline, textSize, em);
+                }
+                if (param.WinAscDescVisible && table?.Os2Table != null)
+                {
+                    using var paint4Win = new SKPaint
+                    {
+                        Color = SKColors.Blue,
+                        IsAntialias = true,
+                        StrokeWidth = 1
+                    };
+                    DrawReferenceLine(canvas, paint4Win, table.Os2Table.usWinAscent, width, baseline, textSize, em);
+                    DrawReferenceLine(canvas, paint4Win, -table.Os2Table.usWinDescent, width, baseline, textSize, em);
+                }
+            }
+            return bitmap;
+        }
+
+        private void DrawReferenceLine(SKCanvas canvas, SKPaint paint, int value, int width, float baseline, int textSize, int unitsPerEm)
+        {
+            float y = baseline - (value * textSize / unitsPerEm); // 将参考线绘制在基线位置
+            canvas.DrawLine(0, y, width, y, paint);
         }
 
         private List<string>? GetTableTags()
