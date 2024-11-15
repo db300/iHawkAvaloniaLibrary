@@ -5,7 +5,9 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iHawkAvaloniaCommonLibrary", "iHawkAvaloniaCommonLibrary\iHawkAvaloniaCommonLibrary.csproj", "{3F1797D5-F4A5-4DF1-9053-763AAE034E36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iHawkSkiaSharpCommonLibrary", "iHawkSkiaSharpCommonLibrary\iHawkSkiaSharpCommonLibrary.csproj", "{55F6F713-251A-48BC-BC9C-A6BDB3E2975F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iHawkSkiaSharpCommonLibrary", "iHawkSkiaSharpCommonLibrary\iHawkSkiaSharpCommonLibrary.csproj", "{55F6F713-251A-48BC-BC9C-A6BDB3E2975F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacAppPacker", "MacAppPacker\MacAppPacker.csproj", "{92CF7272-EBBF-4739-B61C-82F945271943}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{55F6F713-251A-48BC-BC9C-A6BDB3E2975F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55F6F713-251A-48BC-BC9C-A6BDB3E2975F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55F6F713-251A-48BC-BC9C-A6BDB3E2975F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92CF7272-EBBF-4739-B61C-82F945271943}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92CF7272-EBBF-4739-B61C-82F945271943}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92CF7272-EBBF-4739-B61C-82F945271943}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92CF7272-EBBF-4739-B61C-82F945271943}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="MacAppPacker.MainWindow"
+        Title="MacAppPacker">
+  
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    
+    <StackPanel Grid.Row="0" Orientation="Horizontal">
+      <Button Content="Select Folder" Click="SelectFolder_Click"/>
+      <TextBlock VerticalAlignment="Center" x:Name="SelectedFolder"/>
+    </StackPanel>
+
+    <Grid Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" MinWidth="200"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      
+      <ListBox Grid.Column="0" x:Name="FileList" SelectionMode="Multiple"/>
+
+      <Grid Grid.Column="1">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+          <TextBox x:Name="AppName" MinWidth="300" TextChanged="TextBox_TextChanged"/>
+          <Button Content="Pack" Click="Pack_Click"/>
+        </StackPanel>
+        
+        <TextBox Grid.Row="1" x:Name="InfoList" IsReadOnly="True" TextWrapping="NoWrap"/>
+        
+      </Grid>
+      
+    </Grid>
+    
+  </Grid>
+  
+</Window>

@@ -37,5 +37,15 @@ namespace iHawkAvaloniaCommonLibrary
             });
             return files;
         }
+
+        public static async Task<IReadOnlyList<IStorageFolder>?> OpenFolderAsync(Visual? visual)
+        {
+            if (TopLevel.GetTopLevel(visual) is not TopLevel topLevel) return null;
+            var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+            {
+                AllowMultiple = true
+            });
+            return folders;
+        }
     }
 }
