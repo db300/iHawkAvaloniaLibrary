@@ -47,5 +47,21 @@ namespace iHawkAvaloniaCommonLibrary
             });
             return folders;
         }
+
+        public static async Task<IStorageFile?> SaveFileAsync(Visual visual, string defaultExt)
+        {
+            if (TopLevel.GetTopLevel(visual) is not TopLevel topLevel) return null;
+            var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+            {
+                DefaultExtension = defaultExt,
+                SuggestedFileName = $"未命名.{defaultExt}",
+                FileTypeChoices = new List<FilePickerFileType>
+                {
+                    new FilePickerFileType($"{defaultExt}文件") { Patterns = new List<string> { $"*.{defaultExt}" } },
+                    new FilePickerFileType("所有文件") { Patterns = new List<string> { "*.*" } }
+                }
+            });
+            return file;
+        }
     }
 }
