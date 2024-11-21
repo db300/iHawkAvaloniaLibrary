@@ -23,7 +23,7 @@
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       
-      <ListBox Grid.Column="0" x:Name="FileList" SelectionMode="Single"/>
+      <TreeView Grid.Column="0" x:Name="FileTree"/>
 
       <Grid Grid.Column="1">
         <Grid.RowDefinitions>
