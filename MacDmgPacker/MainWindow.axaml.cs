@@ -50,20 +50,7 @@ namespace MacDmgPacker
             File.Copy(backgroundImagePath, Path.Combine(path4Dmg, "background.png"));
 
             // 创建应用程序快捷方式
-            var applicationsLink = Path.Combine(path4Dmg, "Applications");
-            var process = new System.Diagnostics.Process
-            {
-                StartInfo = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = "ln",
-                    Arguments = $"-s /Applications \"{applicationsLink}\"",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
-            };
-            process.Start();
-            process.WaitForExit();
+            CreateApplicationsLink(path4Dmg);
         }
 
         private void CreateDmgFile(string volName, string sourceDir, string dmgPath)
@@ -83,7 +70,7 @@ namespace MacDmgPacker
             process.WaitForExit();
 
             // 配置DMG背景和快捷方式
-            ConfigureDmg(dmgPath, "AppName");//TODO:AppName为临时数据，需要替换为实际的应用名称
+            //ConfigureDmg(dmgPath, "AppName");//TODO:AppName为临时数据，需要替换为实际的应用名称
         }
 
         private void ConfigureDmg(string dmgPath, string appName)
@@ -170,6 +157,9 @@ namespace MacDmgPacker
             return directoryNode;
         }
 
+        /// <summary>
+        /// 复制文件夹用于创建DMG
+        /// </summary>
         private void CopyDirectory(string srcDir, string desDir)
         {
             var dir = new DirectoryInfo(srcDir);
@@ -188,6 +178,28 @@ namespace MacDmgPacker
                 var newDesDir = Path.Combine(desDir, subDir.Name);
                 CopyDirectory(subDir.FullName, newDesDir);
             }
+        }
+
+        /// <summary>
+        /// 创建应用程序快捷方式
+        /// </summary>
+        /// <param name="targetPath">快捷方式存放目录</param>
+        private void CreateApplicationsLink(string targetPath)
+        {
+            var applicationsLink = Path.Combine(targetPath, "Applications");
+            var process = new System.Diagnostics.Process
+            {
+                StartInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "ln",
+                    Arguments = $"-s /Applications \"{applicationsLink}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+            process.Start();
+            process.WaitForExit();
         }
         #endregion
 
@@ -219,6 +231,7 @@ namespace MacDmgPacker
             if (Directory.Exists(tmpDir)) Directory.Delete(tmpDir, true);
             Directory.CreateDirectory(tmpDir);
             CopyDirectory(_srcFolder, tmpDir);
+            CreateApplicationsLink(tmpDir);
             CreateDmgFile(_volName, tmpDir, _dmgFile);
             Directory.Delete(tmpDir, true);
         }
