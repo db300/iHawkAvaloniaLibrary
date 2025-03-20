@@ -23,7 +23,7 @@
         public HheaTable? HheaTable { get; set; }
         public LocaTable LocaTable { get; set; }
         public MaxpTable MaxpTable { get; set; }
-        public NameTable NameTable { get; set; }
+        public NameTable? NameTable { get; set; }
         public Os2Table? Os2Table { get; set; }
         public PostTable PostTable { get; set; }
         #endregion

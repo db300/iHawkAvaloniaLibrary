@@ -50,6 +50,8 @@ namespace iHawkSkiaSharpCommonLibrary.Helpers
                     case "maxp":
                         break;
                     case "name":
+                        if (fontTable.NameTable != null) break;
+                        fontTable.NameTable = GetNameTable();
                         break;
                     case "post":
                         break;
@@ -60,6 +62,12 @@ namespace iHawkSkiaSharpCommonLibrary.Helpers
                 }
             }
             return fontTable;
+        }
+
+        public string GetFullFontName()
+        {
+            var table = GetFontTable(new List<string> { "name" });
+            return table?.NameTable?.NameRecords?.Find(x => x.platformID == 3 && x.encodingID == 1 && x.languageID == 2052 && x.nameID == 4)?.nameString ?? "";
         }
 
         public string GetTypeSetting()
@@ -361,6 +369,62 @@ namespace iHawkSkiaSharpCommonLibrary.Helpers
             offset += 2;
             hheaTable.lineGap = BitConverter.ToInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
             return hheaTable;
+        }
+
+        private NameTable? GetNameTable()
+        {
+            var nameTable = new NameTable();
+            var tableData = _typeface?.GetTableData(0x6E616D65);//name
+            if (tableData is null) return null;
+            //读取'name' header
+            var nameHeader = new NameHeader();
+            var offset = 0;
+            nameHeader.format = BitConverter.ToUInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
+            offset += 2;
+            nameHeader.numberOfRecords = BitConverter.ToUInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
+            offset += 2;
+            nameHeader.storageOffset = BitConverter.ToUInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
+            nameTable.NameHeader = nameHeader;
+            //读取'name' records
+            if (nameHeader.numberOfRecords > 0) nameTable.NameRecords = new List<NameRecord>();
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            for (var i = 0; i < nameHeader.numberOfRecords; i++)
+            {
+                var nameRecord = new NameRecord();
+                offset += 2;
+                nameRecord.platformID = BitConverter.ToUInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
+                offset += 2;
+                nameRecord.encodingID = BitConverter.ToUInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
+                offset += 2;
+                nameRecord.languageID = BitConverter.ToUInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
+                offset += 2;
+                nameRecord.nameID = BitConverter.ToUInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
+                offset += 2;
+                nameRecord.stringLength = BitConverter.ToUInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
+                offset += 2;
+                nameRecord.stringOffset = BitConverter.ToUInt16(tableData.Skip(offset).Take(2).Reverse().ToArray());
+
+                var recbuf = tableData.Skip(nameHeader.storageOffset + nameRecord.stringOffset).Take(nameRecord.stringLength).ToArray();
+                switch (nameRecord.platformID)
+                {
+                    case 0:
+                        nameRecord.nameString = Encoding.BigEndianUnicode.GetString(recbuf);
+                        break;
+                    case 1:
+                        nameRecord.nameString = nameRecord.languageID switch
+                        {
+                            33 => Encoding.GetEncoding("gb18030").GetString(recbuf),
+                            _ => Encoding.Default.GetString(recbuf),
+                        };
+                        break;
+                    case 3:
+                        nameRecord.nameString = Encoding.BigEndianUnicode.GetString(recbuf);
+                        break;
+                }
+
+                nameTable.NameRecords.Add(nameRecord);
+            }
+            return nameTable;
         }
 
         private Os2Table? GetOs2Table()
