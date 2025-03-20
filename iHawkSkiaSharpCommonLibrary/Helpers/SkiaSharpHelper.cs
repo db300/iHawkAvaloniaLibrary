@@ -78,10 +78,18 @@ namespace iHawkSkiaSharpCommonLibrary.Helpers
             sb.AppendLine($"yMax: {table?.HeadTable?.yMax}");
             sb.AppendLine($"ascender: {table?.HheaTable?.ascender}");
             sb.AppendLine($"descender: {table?.HheaTable?.descender}");
+            sb.AppendLine($"lineGap: {table?.HheaTable?.lineGap}");
             sb.AppendLine($"usWinAscent: {table?.Os2Table?.usWinAscent}");
             sb.AppendLine($"usWinDescent: {table?.Os2Table?.usWinDescent}");
             sb.AppendLine($"sTypoAscender: {table?.Os2Table?.sTypoAscender}");
             sb.AppendLine($"sTypoDescender: {table?.Os2Table?.sTypoDescender}");
+            //sb.AppendLine($"fsSelection: {table?.Os2Table?.fsSelection}");
+            var fsSelection = table?.Os2Table?.fsSelection ?? 0;
+            var fsSelectionBinary = Convert.ToString(fsSelection, 2).PadLeft(16, '0');
+            var bit7Value = (fsSelection & (1 << 7)) != 0 ? 1 : 0;
+            sb.AppendLine($"fsSelection: {fsSelectionBinary}");
+            sb.AppendLine($"Bit 7: Use Typo Metrics: {bit7Value}");
+            sb.AppendLine($"sTypoLineGap: {table?.Os2Table?.sTypoLineGap}");
             return sb.ToString();
         }
 
