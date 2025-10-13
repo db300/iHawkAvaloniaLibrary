@@ -7,6 +7,8 @@
         public UInt32 magicNumber { get; set; }
         public UInt16 flags { get; set; }
         public UInt16 unitsPerEm { get; set; }
+        public Int64 created { get; set; }
+        public Int64 modified { get; set; }
         public Int16 xMin { get; set; }
         public Int16 yMin { get; set; }
         public Int16 xMax { get; set; }
@@ -15,7 +17,7 @@
         public UInt16 lowestRecPPEM { get; set; }
         public Int16 fontDirectionHint { get; set; }
         public Int16 indexToLocFormat { get; set; }
-        public Int16 glyphDataFormt { get; set; }
+        public Int16 glyphDataFormat { get; set; }
         #endregion
 
         #region method

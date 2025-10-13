@@ -8,6 +8,7 @@
 
     public class CmapHeader
     {
+        public UInt16 Version { get; set; }
         public UInt16 NumTables { get; set; }
     }
 
@@ -18,7 +19,7 @@
         public UInt32 offset { get; set; }
         public UInt16 format { get; set; }
         public UInt16 length { get; set; }
-        public UInt16 version { get; set; }
+        public UInt16 language { get; set; }
         public CmapSubTableFormat4 Format4 { get; set; }
     }
 
@@ -28,9 +29,9 @@
         public UInt16 searchRange { get; set; }
         public UInt16 entrySelector { get; set; }
         public UInt16 rangeShift { get; set; }
-        public UInt16[] endCount { get; set; }
+        public UInt16[] endCode { get; set; }
         public UInt16 reservedPad { get; set; }
-        public UInt16[] startCount { get; set; }
+        public UInt16[] startCode { get; set; }
         public Int16[] idDelta { get; set; }
         public UInt16[] idRangeOffset { get; set; }
         public UInt16[] glyphIdArray { get; set; }

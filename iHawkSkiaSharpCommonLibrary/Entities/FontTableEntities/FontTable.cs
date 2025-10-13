@@ -17,7 +17,7 @@
             }
         }
 
-        public CmapTable CmapTable { get; set; }
+        public CmapTable? CmapTable { get; set; }
         public GlyfTable GlyfTable { get; set; }
         public HeadTable? HeadTable { get; set; }
         public HheaTable? HheaTable { get; set; }
@@ -56,8 +56,8 @@
                 {
                     for (int i = 0; i < cmapSubTable.Format4.segCountX2 / 2; i++)
                     {
-                        var start = cmapSubTable.Format4.startCount[i];
-                        var end = cmapSubTable.Format4.endCount[i];
+                        var start = cmapSubTable.Format4.startCode[i];
+                        var end = cmapSubTable.Format4.endCode[i];
                         for (int j = start; j < end + 1; j++) if (!unicodes.Contains(j)) unicodes.Add(j);
                     }
                     break;
@@ -100,7 +100,7 @@
             int endIdx = -1, startIdx = -1;
             for (int i = 0; i < format4.segCountX2 / 2; i++)
             {
-                var end = format4.endCount[i];
+                var end = format4.endCode[i];
                 if (end >= unicode)
                 {
                     endIdx = i;
@@ -108,7 +108,7 @@
                 }
             }
             if (endIdx < 0) return 0;
-            var start = format4.startCount[endIdx];
+            var start = format4.startCode[endIdx];
             if (start > unicode) return 0;
             if (format4.idRangeOffset[endIdx] == 0)
                 id = (ushort)((format4.idDelta[endIdx] + unicode) % 65535);
